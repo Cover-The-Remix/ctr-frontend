@@ -64,45 +64,45 @@ export async function getServerSideProps() {
 }
 
 async function fetchMediaItems() {
-  // Fetch the data from The Graph
-  const request = await fetch(process.env.ZORA_SUB_GRAPH_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      query: `query getMediaItems($first: Int!, $creator: String!) {
-          medias(
-            orderBy: createdAtTimestamp, 
-            orderDirection: desc,
-            first: $first, 
-            where: { creator: $creator }
-          ) {
-            id
-            contentURI
-            metadataURI
-            currentBids { id }
-          }
-        }`,
-      variables: {
-        first: 6,
-        creator: process.env.NEXT_PUBLIC_CREATOR_ADDRESS,
-      },
-    }),
-  });
-  const json = await request.json();
-  const { medias } = json.data;
+  // // Fetch the data from The Graph
+  // const request = await fetch(process.env.ZORA_SUB_GRAPH_API_URL, {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({
+  //     query: `query getMediaItems($first: Int!, $creator: String!) {
+  //         medias(
+  //           orderBy: createdAtTimestamp, 
+  //           orderDirection: desc,
+  //           first: $first, 
+  //           where: { creator: $creator }
+  //         ) {
+  //           id
+  //           contentURI
+  //           metadataURI
+  //           currentBids { id }
+  //         }
+  //       }`,
+  //     variables: {
+  //       first: 6,
+  //       creator: process.env.NEXT_PUBLIC_CREATOR_ADDRESS,
+  //     },
+  //   }),
+  // });
+  // const json = await request.json();
+  // const { medias } = json.data;
 
-  // Fetch the contents of the metadata
-  const items = await Promise.all(
-    medias.map(async media => {
-      try {
-        const request = await fetch(media.metadataURI);
-        const metadata = await request.json();
-        return { ...media, ...metadata };
-      } catch {
-        return media;
-      }
-    })
-  );
+  // // Fetch the contents of the metadata
+  // const items = await Promise.all(
+  //   medias.map(async media => {
+  //     try {
+  //       const request = await fetch(media.metadataURI);
+  //       const metadata = await request.json();
+  //       return { ...media, ...metadata };
+  //     } catch {
+  //       return media;
+  //     }
+  //   })
+  // );
 
   return items;
 }
